@@ -2,27 +2,40 @@ const apiUrl = "/api/chat";
 let currentCharacterId = "shakespeare"; // Default
 
 // 1. Function to handle Selection
+// web/public/script.js
+
+// ... variables ...
+
 function selectCharacter(id, name, pfpUrl) {
-    // Save state
     currentCharacterId = id;
 
-    // Update Chat UI
     document.getElementById("chat-name").innerText = name;
     document.getElementById("chat-avatar").src = pfpUrl;
 
-    // Switch Screens
     document.getElementById("selection-screen").style.display = "none";
     document.getElementById("phone-container").style.display = "flex";
 
-    // Clear previous chat (optional)
+    // --- CUSTOM START MESSAGES (NO MORE 'HARK') ---
+    const startMessages = {
+        "shakespeare": "Greetings, friend. What art thou musing upon today? 📜",
+        "romeo": "The sun is pale compared to thee... speak to me, my love. 🌹",
+        "juliet": "Hush! Speak softly... my Nurse is nearby. ✨"
+    };
+
+    // Pick the right message (or default if missing)
+    const greeting = startMessages[id] || "Speak thy mind.";
+
+    // Reset Chat Box with the new greeting
     const chatBox = document.getElementById("chat-box");
     chatBox.innerHTML = `
         <div class="message-row bot-row">
             <div class="bubble bot-bubble">
-                Hark! 'Tis I, ${name}. Speak thy mind. 👻
+                ${greeting}
             </div>
         </div>`;
 }
+
+
 
 // 2. Function to go back
 function goBack() {
