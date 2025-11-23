@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Snapchat Shakespeare</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <div id="selection-screen" class="selection-container">
+        <h1 class="app-title">Who dost thou seek?</h1>
+        
+        <div class="char-grid">
+            <div class="char-card" onclick="selectCharacter('shakespeare', 'William Shakespeare', 'images/shakespeare.jpg')">
+                <img src="images\shakespeare.jpeg" class="pfp-large">
+                <h2>Shakespeare</h2>
+            </div>
+
+            <div class="char-card" onclick="selectCharacter('romeo', 'Romeo Montague', 'images/romeo.jpg')">
+                <img src="images/romeo.jpg" class="pfp-large">
+                <h2>Romeo</h2>
+            </div>
+
+            <div class="char-card" onclick="selectCharacter('juliet', 'Juliet Capulet', 'images/juliet.jpg')">
+                <img src="images/juliet.png" class="pfp-large">
+                <h2>Juliet</h2>
+            </div>
+        </div>
+    </div>
+
+    <div id="phone-container" class="phone-container" style="display: none;">
+        
+        <header class="snap-header">
+            <div class="left-group">
+                <button class="icon-btn back-btn" onclick="goBack()">
+                    <svg viewBox="0 0 24 24" width="28" height="28" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 18 9 12 15 6"></polyline></svg>
+                </button>
+                
+                <div class="avatar-wrapper">
+                    <img id="chat-avatar" src="" alt="Avatar" class="bitmoji">
+                </div>
+                
+                <div class="chat-info">
+                    <h1 id="chat-name" class="chat-name">Name</h1>
+                </div>
+            </div>
+            
+            <div class="right-group">
+                </div> 
+        </header>
+
+        <div id="chat-box" class="chat-area">
+            </div>
+
+        <footer class="snap-footer">
+            <button class="footer-icon camera-btn">
+                <div class="camera-circle">
+                    <svg viewBox="0 0 24 24" width="20" height="20" fill="white"><path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z"/></svg>
+                </div>
+            </button>
+            
+            <div class="input-pill">
+                <input type="text" id="user-input" placeholder="Chat" autocomplete="off" onkeypress="handleEnter(event)">
+            </div>
+
+            <div class="footer-right-icons">
+                <button class="footer-icon plus" onclick="sendMessage()">
+                     <svg viewBox="0 0 24 24" width="24" height="24" fill="#8e8e93"><path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z"/></svg>
+                </button>
+            </div>
+        </footer>
+
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
