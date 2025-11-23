@@ -79,10 +79,7 @@ def chat():
         print(f"ERROR: {e}")
         return jsonify({'response': "Alas, the spirits remain silent."})
 
-# Health Check
-@app.route('/', methods=['GET'])
-def home():
-    return "Hark! The API is alive.", 200
+
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
