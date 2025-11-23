@@ -3,22 +3,25 @@ from flask import Flask, request, jsonify
 from flask_cors import CORS
 import google.generativeai as genai
 from google.generativeai.types import HarmCategory, HarmBlockThreshold
-from dotenv import load_dotenv # <--- YOU MUST ADD THIS IMPORT
+from dotenv import load_dotenv
 
-# 1. Load the secret variables from .env
-load_dotenv() 
-
-# 2. Get the key safely
+# 1. Load Secrets
+load_dotenv()
 GOOGLE_API_KEY = os.getenv("GOOGLE_API_KEY")
 
-# 3. Safety Check (Optional but smart)
-if not GOOGLE_API_KEY:
-    print("CRITICAL ERROR: No API Key found in .env file!")
-else:
+# 2. Configure Gemini with Safety Filters DISABLED
+# This prevents the "Alas, the spirits remain silent" error when Romeo gets romantic.
+if GOOGLE_API_KEY:
     genai.configure(api_key=GOOGLE_API_KEY)
 
+safety_settings = {
+    HarmCategory.HARM_CATEGORY_HARASSMENT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_HATE_SPEECH: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_SEXUALLY_EXPLICIT: HarmBlockThreshold.BLOCK_NONE,
+    HarmCategory.HARM_CATEGORY_DANGEROUS_CONTENT: HarmBlockThreshold.BLOCK_NONE,
+}
 
-# --- THE PERSONAS ---
+# 3. Define Personas
 personas = {
     "shakespeare": """
         You are William Shakespeare.
@@ -31,6 +34,7 @@ personas = {
         1. You are deeply in love, impulsive, and overly dramatic.
         2. Speak in Shakespearean English, but focus on love and heartbreak.
         3. You constantly reference Juliet or the moon.
+        4. You are courting the user.
     """,
     "juliet": """
         You are Juliet Capulet.
@@ -40,45 +44,45 @@ personas = {
     """
 }
 
-# Default Model Setup
 app = Flask(__name__)
 CORS(app)
 
-# We store chat sessions in memory for this demo
+# Memory storage for chat sessions
 chat_sessions = {}
 
 def get_chat_session(character):
     if character not in chat_sessions:
         model = genai.GenerativeModel(
             model_name="gemini-2.5-flash", 
-            system_instruction=personas.get(character, personas['shakespeare'])
+            system_instruction=personas.get(character, personas['shakespeare']),
+            safety_settings=safety_settings 
         )
         chat_sessions[character] = model.start_chat(history=[])
     return chat_sessions[character]
 
-# Add this route to check if the server is alive
-@app.route('/', methods=['GET'])
-def home():
-    return "Hark! The server is alive and breathing!", 200
-
-@app.route('/chat', methods=['POST'])
+# Vercel Route Handling
+@app.route('/api/chat', methods=['POST'])
 def chat():
     try:
         data = request.json
         user_message = data.get('message', '')
-        character = data.get('character', 'shakespeare') # Default to Shakespeare
+        character = data.get('character', 'shakespeare')
         
-        print(f"User talking to {character}: {user_message}")
+        print(f"User ({character}): {user_message}")
 
-        # Get the correct brain for the character
         session = get_chat_session(character)
-        
         response = session.send_message(user_message)
+        
         return jsonify({'response': response.text})
 
     except Exception as e:
-        print(e)
+        print(f"ERROR: {e}")
         return jsonify({'response': "Alas, the spirits remain silent."})
+
+# Health Check
+@app.route('/', methods=['GET'])
+def home():
+    return "Hark! The API is alive.", 200
 
 if __name__ == '__main__':
     app.run(port=5000, debug=True)
