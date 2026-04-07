@@ -11,7 +11,7 @@
 **The Elizabethan Lover** is a full-stack Generative AI application that simulates a "Snapchat" experience with historical figures. Unlike generic chatbots, this project enforces rigid historical personas (Shakespeare, Romeo, Juliet) using System Prompt Engineering and Google's **Gemini 2.5 Flash** architecture.
 
 ---
-````markdown
+
 ## 📖 The "Fail & Fix" Architecture Story
 
 This project is a tale of two halves: **The Data Science** (Research) and **The Product Engineering** (Web).
